@@ -86,6 +86,7 @@ class BillDetailsScreen extends StatelessWidget {
                   ),
                 ],
               ),
+              
             ),
             SizedBox(height: 16),
             ElevatedButton(

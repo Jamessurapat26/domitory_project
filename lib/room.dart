@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'bill_details_screen.dart';
-import 'room.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,92 +8,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Dormitory',
+      title: 'Room List App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignInScreen(),
-      routes: {
-        '/billDetails': (context) => BillDetailsScreen(),
-        '/roomList': (context) => RoomListScreen(),
-      },
-    );
-  }
-}
-
-class SignInScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Dormitory',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 45,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 70),
-              Container(
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Name'),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'name',
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Text('Password'),
-                    TextField(
-                      decoration: InputDecoration(
-                        hintText: 'password',
-                      ),
-                      obscureText: true,
-                    ),
-                    SizedBox(height: 30),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/roomList');
-                        },
-                        child: Text('Sign In'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Center(
-                      child: TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          'Forgot password?',
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      home: RoomListScreen(),
     );
   }
 }
@@ -109,7 +27,9 @@ class RoomListScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.pop(context);
+            // This would typically pop the current route
+            // but since this is the home screen, we'll just print a message
+            print('Back button pressed');
           },
         ),
         title: Text('', style: TextStyle(color: Colors.white)),
@@ -189,8 +109,8 @@ class RoomListScreen extends StatelessWidget {
                     },
                   ),
                   onTap: () {
-                    // Navigate to BillDetailsScreen when a room is tapped
-                    Navigator.pushNamed(context, '/billDetails');
+                    // Handle room selection
+                    print('Room ${101 + index} selected');
                   },
                 );
               },
