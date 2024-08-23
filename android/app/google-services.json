@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "627885409904",
+    "project_id": "domitory-system",
+    "storage_bucket": "domitory-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627885409904:android:e1a1e567620323788816b5",
+        "android_client_info": {
+          "package_name": "com.yourcompany.domitorysystem"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCckjluV9slpih4-S9Jj5_xiF_pbuvziWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

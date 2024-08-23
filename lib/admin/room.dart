@@ -1,24 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-void main() {
-  runApp(MyApp());
-}
+import 'room_bills_screen.dart'; // Import the RoomBillsScreen
 
-class MyApp extends StatelessWidget {
+class RoomListScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Room List App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: RoomListScreen(),
-    );
-  }
+  _RoomListScreenState createState() => _RoomListScreenState();
 }
 
-class RoomListScreen extends StatelessWidget {
+class _RoomListScreenState extends State<RoomListScreen> {
+  bool _isAdminMode = false;
+  List<Map<String, dynamic>> _rooms = [];
+  List<Map<String, dynamic>> _filteredRooms = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRooms();
+  }
+
+  Future<void> _loadRooms() async {
+    final url = Uri.parse('http://192.168.100.129:3000/rooms');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _rooms = List<Map<String, dynamic>>.from(data);
+          _filteredRooms = _rooms;
+        });
+      } else {
+        throw Exception('Failed to load rooms');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void _filterRooms(String query) {
+    final filtered = _rooms
+        .where((room) => room['room_number']
+            .toString()
+            .toLowerCase()
+            .contains(query.toLowerCase()))
+        .toList();
+    setState(() {
+      _filteredRooms = filtered;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,18 +59,21 @@ class RoomListScreen extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            // This would typically pop the current route
-            // but since this is the home screen, we'll just print a message
-            print('Back button pressed');
+            Navigator.pop(context);
           },
         ),
-        title: Text('', style: TextStyle(color: Colors.white)),
+        title: Text(
+          _isAdminMode ? 'Admin Room List' : 'Room List',
+          style: TextStyle(color: Colors.white),
+        ),
         actions: [
           Switch(
-            value: true,
+            value: _isAdminMode,
             onChanged: (value) {
-              // Handle admin mode toggle
-              print('Admin mode toggled: $value');
+              setState(() {
+                _isAdminMode = value;
+              });
+              print('Admin mode toggled: $_isAdminMode');
             },
             activeColor: Colors.white,
           ),
@@ -68,7 +103,7 @@ class RoomListScreen extends StatelessWidget {
                 ),
               ),
               onChanged: (value) {
-                // Handle search
+                _filterRooms(value);
                 print('Searching for: $value');
               },
             ),
@@ -78,43 +113,50 @@ class RoomListScreen extends StatelessWidget {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'อาคาร A',
+                'อาคาร A', // Thai for "Building A"
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Room',
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
           Expanded(
-            child: ListView.builder(
-              itemCount: 7,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: Icon(Icons.star_border),
-                  title: Text('Room ${101 + index}'),
-                  subtitle: Text('Menu description.'),
-                  trailing: IconButton(
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      // Handle add button press
-                      print('Add pressed for Room ${101 + index}');
+            child: _filteredRooms.isNotEmpty
+                ? ListView.builder(
+                    itemCount: _filteredRooms.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Icon(Icons.meeting_room, color: Colors.blue),
+                        title: Text(_filteredRooms[index]['room_number']),
+                        trailing: _isAdminMode
+                            ? IconButton(
+                                icon: Icon(Icons.edit, color: Colors.red),
+                                onPressed: () {
+                                  print(
+                                      'Edit pressed for ${_filteredRooms[index]['room_number']}');
+                                },
+                              )
+                            : null,
+                        onTap: () {
+                          // Navigate to RoomBillsScreen and pass the room ID and room number
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RoomBillsScreen(
+                                roomId: _filteredRooms[index]['room_id'],
+                                roomNumber: _filteredRooms[index]
+                                    ['room_number'],
+                              ),
+                            ),
+                          );
+                        },
+                      );
                     },
+                  )
+                : Center(
+                    child: Text(
+                      'No rooms found',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
                   ),
-                  onTap: () {
-                    // Handle room selection
-                    print('Room ${101 + index} selected');
-                  },
-                );
-              },
-            ),
           ),
         ],
       ),
