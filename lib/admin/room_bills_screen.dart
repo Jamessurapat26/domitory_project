@@ -33,7 +33,7 @@ class _RoomBillsScreenState extends State<RoomBillsScreen> {
 
   Future<void> _loadBills() async {
     final url =
-        Uri.parse('http://192.168.100.129:3000/bills?room_id=${widget.roomId}');
+        Uri.parse('http://10.0.2.2:3000/bills?room_id=${widget.roomId}');
     try {
       final response = await http.get(url);
 

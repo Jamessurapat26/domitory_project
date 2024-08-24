@@ -139,7 +139,7 @@ class BillDetailsScreen extends StatelessWidget {
   }
 
   Future<Map<String, dynamic>> _fetchBillDetails(int roomId) async {
-    final url = Uri.parse('http://192.168.100.129:3000/bills/latest/$roomId');
+    final url = Uri.parse('http://10.0.2.2/bills/latest/$roomId');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -195,7 +195,7 @@ class BillDetailsScreen extends StatelessWidget {
   }
 
   Future<void> _payBill(int billId) async {
-    final url = Uri.parse('http://192.168.100.129:3000/bills/pay/$billId');
+    final url = Uri.parse('http://10.0.2.2:3000/bills/pay/$billId');
     final response = await http.put(url, body: json.encode({'pay': 1}));
 
     if (response.statusCode == 200) {

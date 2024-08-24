@@ -21,7 +21,7 @@ class _RoomListScreenState extends State<RoomListScreen> {
   }
 
   Future<void> _loadRooms() async {
-    final url = Uri.parse('http://192.168.100.129:3000/rooms');
+    final url = Uri.parse('http://10.0.2.2:3000/rooms');
     try {
       final response = await http.get(url);
 
